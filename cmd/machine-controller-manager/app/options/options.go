@@ -25,11 +25,11 @@ import (
 	"time"
 
 	machineconfig "github.com/gardener/machine-controller-manager/pkg/options"
+	"github.com/gardener/machine-controller-manager/pkg/util/client/leaderelectionconfig"
 	"github.com/spf13/pflag"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
-
-	"github.com/gardener/machine-controller-manager/pkg/util/client/leaderelectionconfig"
+	"k8s.io/component-base/logs"
 
 	"github.com/gardener/machine-controller-manager/pkg/controller"
 	// add the machine feature gates
@@ -117,6 +117,8 @@ func (s *MCMServer) AddFlags(fs *pflag.FlagSet) {
 	fs.BoolVar(&s.DeleteMigratedMachineClass, "delete-migrated-machine-class", false, "Deletes any (provider specific) machine class that has the machine.sapcloud.io/migrated annotation")
 
 	fs.BoolVar(&s.AutoscalerScaleDownAnnotationDuringRollout, "autoscaler-scaldown-annotation-during-rollout", true, "Add cluster autoscaler scale-down disabled annotation during roll-out.")
+
+	logs.AddFlags(fs) // Here `logs` is `k8s.io/component-base/logs`.
 
 	leaderelectionconfig.BindFlags(&s.LeaderElection, fs)
 	// TODO: DefaultFeatureGate is global and it adds all k8s flags
